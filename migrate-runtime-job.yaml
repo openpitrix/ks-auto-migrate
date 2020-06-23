@@ -1,0 +1,36 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: hyperpitrix-migrate-runtime
+  namespace: openpitrix-system
+  labels:
+    app: hyperpitrix
+    job: hyperpitrix-migrate-runtime
+    version: v0.0.1
+spec:
+  backoffLimit: 100
+  completions: 1
+  parallelism: 1
+  template:
+    metadata:
+      labels:
+        app: hyperpitrix
+        job: hyperpitrix-migrate-runtime
+        version: v0.0.1
+      name: hyperpitrix-migrate-runtime-job
+    spec:
+      initContainers:
+        - name: wait-runtime-manager
+          image: busybox:1.28.4
+          imagePullPolicy: IfNotPresent
+          command: ['sh', '-c', 'until nc -z hyperpitrix.openpitrix-system.svc 9103; do echo "waiting for runtime-manager"; sleep 2; done;']
+      containers:
+        - command: ["migrate-runtime"]
+          name: hyperpitrix-migrate-runtime
+          imagePullPolicy: Always
+          image: openpitrix/generate-kubeconfig:latest
+      restartPolicy: OnFailure
+      dnsPolicy: ClusterFirst
+      schedulerName: default-scheduler
+      securityContext: {}
+      terminationGracePeriodSeconds: 30
