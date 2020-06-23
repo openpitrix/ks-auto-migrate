@@ -3,6 +3,7 @@ package main
 import (
 	"context"
 	"flag"
+	"fmt"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/client-go/kubernetes"
 	"k8s.io/client-go/rest"
@@ -22,6 +23,11 @@ func main() {
 	var clusterServer string
 	flag.StringVar(&clusterServer, "srv", "https://kubernetes", "config cluster server")
 	flag.Parse()
+
+	clusterSvc := os.Getenv("KUBERNETES_SERVICE_HOST")
+	clusterPort := os.Getenv("KUBERNETES_SERVICE_PORT")
+	clusterServer = "https://" + clusterSvc + ":" + clusterPort
+	fmt.Println(clusterServer)
 
 	// creates the in-cluster config
 	config, err := rest.InClusterConfig()
