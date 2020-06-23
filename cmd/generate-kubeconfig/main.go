@@ -63,28 +63,31 @@ func main() {
 	}
 
 	kconfig := v1.Config{}
+	kconfig.Kind = "Config"
+	kconfig.Preferences = v1.Preferences{}
 
 	namedCluster := v1.NamedCluster{}
-	namedCluster.Name = "cluster"
+	namedCluster.Name = "cluster.local"
 	cluster := v1.Cluster{}
 	cluster.Server = "https://lb.kubesphere.local:6443"
 	cluster.CertificateAuthorityData = crt
 	namedCluster.Cluster = cluster
 	kconfig.Clusters = []v1.NamedCluster{namedCluster}
 
-	namedContext := v1.NamedContext{}
-	namedContext.Name = "default@cluster.local"
-	kconfig.Contexts = []v1.NamedContext{namedContext}
-
-	kconfig.Kind = "Config"
-
-	kconfig.Preferences = v1.Preferences{}
-
 	namedUser := v1.NamedAuthInfo{}
-	namedUser.Name = "default"
-	namedUser.AuthInfo = v1.AuthInfo{Token:string(token)}
+	namedUser.Name = sa.Name
+	namedUser.AuthInfo = v1.AuthInfo{Token: string(token)}
 	kconfig.AuthInfos = []v1.NamedAuthInfo{namedUser}
 
+	namedContext := v1.NamedContext{}
+	namedContext.Name = "default@cluster.local"
+	namedContext.Context = v1.Context{
+		Cluster:  "cluster.local",
+		AuthInfo: "default",
+	}
+	kconfig.Contexts = []v1.NamedContext{namedContext}
+
+	kconfig.CurrentContext = "default@cluster.local"
 
 	kk, err := yamlutil.Encode(kconfig)
 	if err != nil {
@@ -131,6 +134,5 @@ func main() {
 		logger.Error(nil, "create runtime error %s", err.Error())
 		os.Exit(-1)
 	}
-
 
 }
