@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"flag"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/client-go/kubernetes"
 	"k8s.io/client-go/rest"
@@ -18,6 +19,10 @@ import (
 )
 
 func main() {
+	var clusterServer string
+	flag.StringVar(&clusterServer, "srv", "https://kubernetes", "config cluster server")
+	flag.Parse()
+
 	// creates the in-cluster config
 	config, err := rest.InClusterConfig()
 	if err != nil {
@@ -62,6 +67,7 @@ func main() {
 		os.Exit(-1)
 	}
 
+	//construct kubeconfig
 	kconfig := v1.Config{}
 	kconfig.Kind = "Config"
 	kconfig.Preferences = v1.Preferences{}
@@ -69,7 +75,8 @@ func main() {
 	namedCluster := v1.NamedCluster{}
 	namedCluster.Name = "cluster.local"
 	cluster := v1.Cluster{}
-	cluster.Server = "https://lb.kubesphere.local:6443"
+	//cluster.Server = "https://lb.kubesphere.local:6443"
+	cluster.Server = clusterServer
 	cluster.CertificateAuthorityData = crt
 	namedCluster.Cluster = cluster
 	kconfig.Clusters = []v1.NamedCluster{namedCluster}
