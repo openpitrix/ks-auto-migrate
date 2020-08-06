@@ -1,8 +1,9 @@
-module openpitrix.io/Jobs
+module openpitrix.io/ks-auto-migrate
 
 go 1.13
 
 require (
+	github.com/golang/protobuf v1.3.2
 	golang.org/x/oauth2 v0.0.0-20200107190931-bf48bf16ab8d // indirect
 	golang.org/x/time v0.0.0-20200416051211-89c76fbcd5d1 // indirect
 	k8s.io/api v0.18.4 // indirect
