@@ -1,4 +1,4 @@
-module openpitrix.io/ks-auto-migrate
+module github.com/openpitrix/ks-auto-migrate
 
 go 1.13
 
