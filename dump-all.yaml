@@ -1,0 +1,50 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: openpitrix
+    component: openpitrix-dump-all
+  name: openpitrix-dump-all
+  namespace: openpitrix-system
+spec:
+  selector:
+    matchLabels:
+      app: openpitrix
+      component: openpitrix-dump-all
+  template:
+    metadata:
+      labels:
+        app: openpitrix
+        component: openpitrix-dump-all
+    spec:
+      volumes:
+        - name: config-volume
+          configMap:
+            name: dump-config
+      containers:
+        - command: ["dump-all"]
+          env:
+            - name: OPENPITRIX_GRPC_SHOW_ERROR_CAUSE
+              value: "true"
+            - name: OPENPITRIX_LOG_LEVEL
+              value: debug
+            - name: OPENPITRIX_ETCD_ENDPOINTS
+              value: etcd.kubesphere-system.svc:2379
+            - name: OPENPITRIX_MYSQL_HOST
+              value: mysql.kubesphere-system.svc
+            - name: OPENPITRIX_ATTACHMENT_ENDPOINT
+              value: http://minio.kubesphere-system.svc:9000
+            - name: OPENPITRIX_ATTACHMENT_BUCKET_NAME
+              value: openpitrix-attachment
+            - name: OPENPITRIX_MYSQL_PASSWORD
+              value: password
+          image: openpitrix/dump-all:latest
+          imagePullPolicy: Always
+          name: dump-all
+          resources:
+            requests:
+              memory: "256Mi"
+              cpu: "250m"
+            limits:
+              memory: "256Mi"
+              cpu: "500m"

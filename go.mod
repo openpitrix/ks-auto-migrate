@@ -3,13 +3,10 @@ module github.com/openpitrix/ks-auto-migrate
 go 1.13
 
 require (
+	github.com/aws/aws-sdk-go v1.25.21
 	github.com/golang/protobuf v1.3.2
-	golang.org/x/oauth2 v0.0.0-20200107190931-bf48bf16ab8d // indirect
-	golang.org/x/time v0.0.0-20200416051211-89c76fbcd5d1 // indirect
-	k8s.io/api v0.18.4 // indirect
 	k8s.io/apimachinery v0.18.4
 	k8s.io/client-go v11.0.1-0.20190409021438-1a26190bd76a+incompatible
-	k8s.io/utils v0.0.0-20200619165400-6e3d28b6ed19 // indirect
 	openpitrix.io/notification v0.2.2
 	openpitrix.io/openpitrix v0.4.8
 )
