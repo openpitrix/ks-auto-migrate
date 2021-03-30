@@ -12,7 +12,6 @@ import (
 	"os"
 	"path/filepath"
 	"reflect"
-	"time"
 
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/service/s3"
@@ -117,6 +116,13 @@ func dumpRepos() {
 	errHandler(err)
 	writeFileContent("repos.json", rows)
 }
+func dumpRepoLabels() {
+	var rows []models.RepoLabel
+	ctx := CtxWithDB("repo", context.Background())
+	_, err := pi.Global().DB(ctx).Select("*").From("repo_label").Load(&rows)
+	errHandler(err)
+	writeFileContent("repo_labels.json", rows)
+}
 func dumpAttachments() {
 	var rows []models.Attachment
 	ctx := CtxWithDB("attachment", context.Background())
@@ -155,8 +161,6 @@ func main() {
 	dumpCategoryResources()
 	dumpClusters()
 	dumpRepos()
+	dumpRepoLabels()
 	dumpAttachments()
-
-	log.Printf("Sleep for 100 minutes")
-	time.Sleep(100 * time.Minute)
 }
